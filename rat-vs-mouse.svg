@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1600" height="1200" viewBox="0 0 1600 1200" font-family="'WenQuanYi Zen Hei','Noto Sans CJK SC',sans-serif">
+  <defs>
+    <!-- Rat: big body, small ears, blunt snout, thick scaly tail shorter than body -->
+    <symbol id="rat" viewBox="0 0 480 210">
+      <path d="M300 135 Q380 200 470 160" fill="none" stroke="#c9a59a" stroke-width="12" stroke-linecap="round"/>
+      <path d="M300 135 Q380 200 470 160" fill="none" stroke="#a9867b" stroke-width="12" stroke-dasharray="2 9"/>
+      <ellipse cx="135" cy="170" rx="18" ry="10" fill="#6f6255"/>
+      <ellipse cx="265" cy="172" rx="24" ry="11" fill="#6f6255"/>
+      <ellipse cx="200" cy="120" rx="112" ry="58" fill="#857565"/>
+      <ellipse cx="88" cy="118" rx="58" ry="42" fill="#857565"/>
+      <ellipse cx="40" cy="126" rx="26" ry="22" fill="#857565"/>
+      <ellipse cx="108" cy="80" rx="14" ry="16" fill="#857565"/>
+      <ellipse cx="108" cy="82" rx="8" ry="10" fill="#d9a3a0"/>
+      <circle cx="68" cy="108" r="5" fill="#1d1d1d"/>
+      <circle cx="18" cy="126" r="6" fill="#d98a8a"/>
+      <g stroke="#3a3a3a" stroke-width="1.5" fill="none">
+        <path d="M30 128 L-5 115"/><path d="M30 132 L-8 133"/><path d="M32 136 L-2 150"/>
+      </g>
+    </symbol>
+    <!-- Mouse: small body, big ears, pointed snout, thin tail longer than body -->
+    <symbol id="mouse" viewBox="0 0 480 210">
+      <path d="M225 132 C300 195 380 95 472 150" fill="none" stroke="#d1aea4" stroke-width="4" stroke-linecap="round"/>
+      <ellipse cx="125" cy="160" rx="12" ry="7" fill="#8f8880"/>
+      <ellipse cx="205" cy="160" rx="16" ry="8" fill="#8f8880"/>
+      <ellipse cx="165" cy="122" rx="70" ry="42" fill="#aaa39b"/>
+      <path d="M125 92 Q70 98 20 130 Q65 150 130 150 Z" fill="#aaa39b"/>
+      <circle cx="108" cy="80" r="30" fill="#aaa39b"/>
+      <circle cx="108" cy="80" r="19" fill="#e6b3ae"/>
+      <circle cx="70" cy="114" r="5.5" fill="#1d1d1d"/>
+      <circle cx="21" cy="130" r="4.5" fill="#d98a8a"/>
+      <g stroke="#3a3a3a" stroke-width="1.3" fill="none">
+        <path d="M30 130 L-5 117"/><path d="M30 133 L-8 135"/><path d="M32 137 L-2 152"/>
+      </g>
+    </symbol>
+  </defs>
+
+  <rect width="1600" height="1200" fill="#faf7f2"/>
+
+  <!-- Title -->
+  <text x="800" y="78" text-anchor="middle" font-size="52" font-weight="bold" fill="#2b2b2b">Rat（大鼠） vs Mouse（小鼠）</text>
+  <text x="800" y="122" text-anchor="middle" font-size="24" fill="#6b6b6b">怎么区分？看体型、耳朵、口鼻、尾巴和粪便</text>
+
+  <!-- Rat panel -->
+  <rect x="60" y="150" width="710" height="400" rx="24" fill="#efe6da" stroke="#c8b49a" stroke-width="2"/>
+  <text x="95" y="205" font-size="40" font-weight="bold" fill="#5a4632">Rat 大鼠</text>
+  <text x="95" y="240" font-size="20" fill="#7a6a58" font-style="italic">Rattus norvegicus（褐家鼠）</text>
+  <use xlink:href="#rat" x="140" y="270" width="560" height="245"/>
+  <g font-size="21" fill="#5a4632">
+    <line x1="266" y1="355" x2="240" y2="290" stroke="#5a4632" stroke-width="1.5"/>
+    <text x="170" y="285">耳朵小</text>
+    <line x1="155" y1="415" x2="110" y2="470" stroke="#5a4632" stroke-width="1.5"/>
+    <text x="72" y="495">口鼻钝圆</text>
+    <line x1="590" y1="455" x2="620" y2="500" stroke="#5a4632" stroke-width="1.5"/>
+    <text x="440" y="528">尾巴粗、有鳞，比身体短</text>
+    <text x="520" y="215" font-size="22" font-weight="bold">体型大、粗壮</text>
+  </g>
+
+  <!-- Mouse panel -->
+  <rect x="830" y="150" width="710" height="400" rx="24" fill="#e7ecef" stroke="#a9b6bf" stroke-width="2"/>
+  <text x="865" y="205" font-size="40" font-weight="bold" fill="#34495a">Mouse 小鼠</text>
+  <text x="865" y="240" font-size="20" fill="#5d7080" font-style="italic">Mus musculus（小家鼠）</text>
+  <use xlink:href="#mouse" x="910" y="270" width="560" height="245"/>
+  <g font-size="21" fill="#34495a">
+    <line x1="1036" y1="335" x2="1010" y2="290" stroke="#34495a" stroke-width="1.5"/>
+    <text x="950" y="285">耳朵大而圆</text>
+    <line x1="938" y1="425" x2="905" y2="470" stroke="#34495a" stroke-width="1.5"/>
+    <text x="862" y="495">口鼻尖细</text>
+    <line x1="1370" y1="400" x2="1400" y2="470" stroke="#34495a" stroke-width="1.5"/>
+    <text x="1250" y="528">尾巴细长，与身体等长或更长</text>
+    <text x="1290" y="215" font-size="22" font-weight="bold">体型小、纤细</text>
+  </g>
+
+  <!-- Comparison table -->
+  <g font-size="22">
+    <rect x="60" y="580" width="1480" height="60" rx="12" fill="#3d3d3d"/>
+    <text x="150" y="619" text-anchor="middle" fill="#fff" font-weight="bold">特征</text>
+    <text x="600" y="619" text-anchor="middle" fill="#fff" font-weight="bold">Rat 大鼠</text>
+    <text x="1200" y="619" text-anchor="middle" fill="#fff" font-weight="bold">Mouse 小鼠</text>
+
+    <rect x="60" y="640" width="1480" height="58" fill="#ffffff"/>
+    <rect x="60" y="698" width="1480" height="58" fill="#f3f0ea"/>
+    <rect x="60" y="756" width="1480" height="58" fill="#ffffff"/>
+    <rect x="60" y="814" width="1480" height="58" fill="#f3f0ea"/>
+    <rect x="60" y="872" width="1480" height="58" fill="#ffffff"/>
+    <rect x="60" y="930" width="1480" height="58" fill="#f3f0ea"/>
+    <line x1="240" y1="640" x2="240" y2="988" stroke="#ddd"/>
+    <line x1="900" y1="640" x2="900" y2="988" stroke="#ddd"/>
+
+    <g font-weight="bold" fill="#333" text-anchor="middle">
+      <text x="150" y="677">体长(不含尾)</text>
+      <text x="150" y="735">体重</text>
+      <text x="150" y="793">耳朵</text>
+      <text x="150" y="851">口鼻</text>
+      <text x="150" y="909">尾巴</text>
+      <text x="150" y="967">粪便</text>
+    </g>
+    <g fill="#5a4632">
+      <text x="270" y="677">约 20–25 厘米</text>
+      <text x="270" y="735">约 250–500 克</text>
+      <text x="270" y="793">相对头部较小、贴近头部</text>
+      <text x="270" y="851">宽而钝，头部粗大</text>
+      <text x="270" y="909">粗、多鳞、少毛，通常比身体短</text>
+      <text x="270" y="967">约 1–2 厘米，两端较钝，像胶囊</text>
+    </g>
+    <g fill="#34495a">
+      <text x="930" y="677">约 7–10 厘米</text>
+      <text x="930" y="735">约 15–30 克</text>
+      <text x="930" y="793">相对头部很大、又薄又圆</text>
+      <text x="930" y="851">尖细，呈三角形</text>
+      <text x="930" y="909">细、有细毛，与身体等长或更长</text>
+      <text x="930" y="967">约 3–6 毫米，两端尖，像米粒</text>
+    </g>
+    <rect x="60" y="580" width="1480" height="408" rx="12" fill="none" stroke="#bbb"/>
+  </g>
+
+  <!-- To-scale strip -->
+  <rect x="60" y="1015" width="1480" height="130" rx="18" fill="#ffffff" stroke="#ddd"/>
+  <text x="95" y="1060" font-size="24" font-weight="bold" fill="#333">真实比例对比</text>
+  <text x="95" y="1095" font-size="18" fill="#777">（按平均体长缩放）</text>
+  <use xlink:href="#rat" x="480" y="1020" width="274" height="120"/>
+  <text x="617" y="1140" text-anchor="middle" font-size="18" fill="#5a4632">大鼠 ≈ 22 cm</text>
+  <use xlink:href="#mouse" x="980" y="1067" width="114" height="50"/>
+  <text x="1037" y="1140" text-anchor="middle" font-size="18" fill="#34495a">小鼠 ≈ 8.5 cm</text>
+
+  <text x="800" y="1180" text-anchor="middle" font-size="17" fill="#888">以最常见的褐家鼠与小家鼠为例；口诀：大鼠「头大耳小尾短粗」，小鼠「头尖耳大尾细长」</text>
+</svg>
