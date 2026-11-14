@@ -60,19 +60,27 @@ python -m server.app
 
 运行测试：`pip install -r requirements-dev.txt && pytest`
 
+### 把对话功能加到你自己的网页里（比如 Codex 做的网页）
+
+在你网页 HTML 的 `</body>` 前面加一行：
+
+```html
+<script src="http://localhost:8000/static/tutor-widget.js" data-title="Lily 老师"></script>
+```
+
+页面右下角会出现“🎤 和 AI 老师说英语”按钮，点开就能对话。组件的样式是隔离的，不会影响你原来的页面。
+
+- 先运行 `python -m server.app`，再打开你的网页。两个都在本机时用 localhost，不需要 HTTPS。
+- API Key 只放在 `.env` 里，网页里不需要也不应该出现 Key。
+- 想自己设计界面：引入 `http://localhost:8000/static/tutor-client.js`，用 `EnglishTutor.create()` 拿到事件和音频，用法见文件开头的注释。
+
 ## 四、接上真实硬件（ESP32-S3 + xiaozhi 开源固件）
 
 设备端直接用开源固件 [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32)。它已经做好了唤醒词、按键、Opus 编解码、WiFi 配网、屏幕表情和 AEC。本服务实现了它的 WebSocket 协议，设备连上来就能用，**不用自己写固件**。
 
-### 推荐硬件（原型阶段）
+### 推荐硬件
 
-| 方案 | 说明 | 参考价 |
-|---|---|---|
-| **乐鑫 ESP32-S3-BOX-3**（首选） | 官方开发套件，双麦加 AEC、喇叭、屏幕都带，xiaozhi 直接支持，能边说边打断 | ~300 元 |
-| 淘宝“小智 AI 开发板”或立创·实战派 ESP32-S3 | 带麦、喇叭、屏幕的成品板，xiaozhi 有对应板型 | 80～200 元 |
-| 面包板 DIY | ESP32-S3-N16R8 + INMP441 麦克风 + MAX98357A 功放 + 3W 喇叭（xiaozhi 的 `bread-compact-wifi` 板型） | ~50 元 |
-
-量产时换成定制 PCB：ESP32-S3 + ES7210/ES8311 双麦 codec + 功放 + 锂电。BOM 大约 40～80 元。
+**要回声消除和可打断，必须用带 ES7210 + ES8311 的板子，比如立创·实战派 ESP32-S3。** 纯面包板方案（INMP441 + MAX98357A）在 xiaozhi 固件里不支持回声消除。选购链接、接线和烧录步骤见 [HARDWARE.md](HARDWARE.md)。
 
 ### 让设备连到本服务
 

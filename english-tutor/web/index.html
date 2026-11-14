@@ -35,10 +35,11 @@
     <button id="stop" class="secondary" hidden>结束</button>
   </div>
 </main>
+<script src="/static/tutor-client.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
 const log = $("log");
-let ws, ctx, micStream, micNode, playHead = 0, playing = [], tutorBubble = null, pttMode = false, pttDown = false;
+let tutor = null, bubble = null;
 
 function add(cls, text) {
   const div = document.createElement("div");
@@ -49,112 +50,47 @@ function add(cls, text) {
   return div;
 }
 const status = (t) => { $("status").textContent = t; };
-
-// Downsample mic audio to 16 kHz PCM16, ~40 ms per chunk.
-const workletSrc = `
-class Mic extends AudioWorkletProcessor {
-  constructor() { super(); this.ratio = sampleRate / 16000; this.pos = 0; this.buf = []; }
-  process(inputs) {
-    const ch = inputs[0][0];
-    if (!ch) return true;
-    for (; this.pos < ch.length; this.pos += this.ratio) {
-      const s = Math.max(-1, Math.min(1, ch[Math.floor(this.pos)]));
-      this.buf.push(s < 0 ? s * 0x8000 : s * 0x7fff);
-    }
-    this.pos -= ch.length;
-    if (this.buf.length >= 640) { this.port.postMessage(Int16Array.from(this.buf).buffer, []); this.buf = []; }
-    return true;
-  }
-}
-registerProcessor("mic", Mic);`;
-
-function playPcm24k(buf) {
-  const pcm = new Int16Array(buf);
-  const audio = ctx.createBuffer(1, pcm.length, 24000);
-  const ch = audio.getChannelData(0);
-  for (let i = 0; i < pcm.length; i++) ch[i] = pcm[i] / 0x8000;
-  const src = ctx.createBufferSource();
-  src.buffer = audio;
-  src.connect(ctx.destination);
-  playHead = Math.max(playHead, ctx.currentTime + 0.05);
-  src.start(playHead);
-  playHead += audio.duration;
-  playing.push(src);
-  src.onended = () => { playing = playing.filter((s) => s !== src); };
-}
-function stopPlayback() {
-  playing.forEach((s) => { try { s.stop(); } catch {} });
-  playing = []; playHead = 0;
-}
+const idleUi = () => { $("start").hidden = false; $("ptt").hidden = true; $("stop").hidden = true; };
 
 function onEvent(ev) {
   switch (ev.type) {
     case "ready":
-      pttMode = ev.turn_mode === "push_to_talk";
-      $("ptt").hidden = !pttMode;
-      status(pttMode ? `已连接 ${ev.model}：按住按钮说话，松开后老师回答` : `已连接 ${ev.model}：直接说英语吧（说话可打断老师）`);
-      ws.send(JSON.stringify({ type: "greet" }));
+      $("ptt").hidden = !tutor.pttMode;
+      status(tutor.pttMode ? `已连接 ${ev.model}：按住按钮说话，松开后老师回答` : `已连接 ${ev.model}：直接说英语吧（说话可打断老师）`);
       break;
     case "speech_started": status("正在听…"); break;
     case "speech_stopped": status("思考中…"); break;
-    case "interrupt": stopPlayback(); tutorBubble = null; break;
+    case "interrupt": bubble = null; break;
     case "user_transcript": if (ev.text) add("kid", ev.text); break;
-    case "response_started": tutorBubble = null; status("老师在说…"); break;
+    case "response_started": bubble = null; status("老师在说…"); break;
     case "text_delta":
-      if (!tutorBubble) tutorBubble = add("tutor", "");
-      tutorBubble.textContent += ev.text; log.scrollTop = log.scrollHeight;
+      if (!bubble) bubble = add("tutor", "");
+      bubble.textContent += ev.text; log.scrollTop = log.scrollHeight;
       break;
     case "response_done":
-      tutorBubble = null;
-      status(pttMode ? "按住按钮说话" : "轮到你说啦");
+      bubble = null;
+      status(tutor.pttMode ? "按住按钮说话" : "轮到你说啦");
       if (ev.latency_ms != null) add("meta", `首包延迟 ${Math.round(ev.latency_ms)} ms`);
       break;
     case "error": add("meta", "错误：" + ev.message); break;
+    case "closed": status("连接已断开"); idleUi(); break;
   }
 }
 
-async function start() {
+$("start").onclick = async () => {
   $("start").hidden = true;
   status("正在打开麦克风…");
-  ctx = new AudioContext();
-  micStream = await navigator.mediaDevices.getUserMedia({
-    audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-  });
-  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([workletSrc], { type: "application/javascript" })));
-  micNode = new AudioWorkletNode(ctx, "mic");
-  ctx.createMediaStreamSource(micStream).connect(micNode);
-
-  ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws/browser");
-  ws.binaryType = "arraybuffer";
-  ws.onmessage = (m) => (typeof m.data === "string" ? onEvent(JSON.parse(m.data)) : playPcm24k(m.data));
-  ws.onclose = () => { status("连接已断开"); cleanup(); };
-  micNode.port.onmessage = (e) => {
-    if (ws.readyState === 1 && (!pttMode || pttDown)) ws.send(e.data);
-  };
-  $("stop").hidden = false;
-}
-
-function cleanup() {
-  stopPlayback();
-  micStream && micStream.getTracks().forEach((t) => t.stop());
-  ctx && ctx.close();
-  $("start").hidden = false; $("ptt").hidden = true; $("stop").hidden = true;
-}
-
-const ptt = $("ptt");
-ptt.addEventListener("pointerdown", () => {
-  pttDown = true; ptt.classList.add("active"); stopPlayback(); status("正在听…（松开结束）");
-  ws.send(JSON.stringify({ type: "ptt_start" }));
-});
-const pttUp = () => {
-  if (!pttDown) return;
-  pttDown = false; ptt.classList.remove("active"); status("思考中…");
-  ws.send(JSON.stringify({ type: "ptt_stop" }));
+  tutor = EnglishTutor.create();
+  tutor.on("event", onEvent);
+  try { await tutor.start(); $("stop").hidden = false; }
+  catch (e) { add("meta", "启动失败：" + e.message); idleUi(); }
 };
+$("stop").onclick = () => tutor && tutor.stop();
+const ptt = $("ptt");
+ptt.addEventListener("pointerdown", () => { ptt.classList.add("active"); status("正在听…（松开结束）"); tutor.pttStart(); });
+const pttUp = () => { if (!ptt.classList.contains("active")) return; ptt.classList.remove("active"); status("思考中…"); tutor.pttStop(); };
 ptt.addEventListener("pointerup", pttUp);
 ptt.addEventListener("pointerleave", pttUp);
-$("start").onclick = () => start().catch((e) => { add("meta", "启动失败：" + e.message); cleanup(); });
-$("stop").onclick = () => { ws && ws.close(); };
 </script>
 </body>
 </html>
